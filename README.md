@@ -1,2 +1,2 @@
-# nec_games
-collection of nec-made games.
+# NEC Files
+
