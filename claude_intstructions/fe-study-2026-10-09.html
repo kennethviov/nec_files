@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FE Sprint Coach</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--txt:#1d232b;--mut:#66727f;--line:#e2e6ea;--acc:#2f6fdb;--accs:#e8f0fd;--ok:#1f9d55;--oks:#e5f6ec;--bad:#d64545;--bads:#fbeaea;--warn:#b7791f;--warns:#fdf3e1}
+@media (prefers-color-scheme:dark){:root{--bg:#121519;--card:#1b1f25;--txt:#e7eaee;--mut:#97a2ae;--line:#2c323a;--acc:#6ea0ff;--accs:#1d2a40;--ok:#4cc07f;--oks:#16291f;--bad:#ff7a7a;--bads:#2e1a1a;--warn:#e0a84a;--warns:#2c2415}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:16px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+h1{font-size:22px;margin:4px 0}h2{font-size:17px;margin:0 0 10px}h3{font-size:15px;margin:12px 0 6px}
+.mut{color:var(--mut)}.small{font-size:13px}
+.tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--acc)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;background:var(--accs);color:var(--acc);font-size:12px;font-weight:600;margin-right:6px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.top>div:first-child{flex:1;min-width:240px}
+.count{text-align:right}.count b{font-size:28px;display:block;line-height:1}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:9px;padding:7px 12px}
+button:hover:not(:disabled){border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button:disabled{opacity:.6;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px 0 2px}.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.check:first-of-type{border-top:0}
+.check input{margin-top:4px;width:18px;height:18px;flex:none}
+.check.done span.t{text-decoration:line-through;color:var(--mut)}
+.timer{font-variant-numeric:tabular-nums;font-size:34px;font-weight:700;letter-spacing:.02em}
+.timer.end{color:var(--bad);animation:bl 1s infinite}@keyframes bl{50%{opacity:.3}}
+ul{margin:6px 0;padding-left:20px}
+.steps li{margin:3px 0}
+.box{border-left:3px solid var(--acc);background:var(--accs);padding:8px 12px;border-radius:0 8px 8px 0;margin:10px 0}
+.box.warn{border-color:var(--warn);background:var(--warns)}
+.qtext{white-space:pre-wrap}
+pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;font:13px/1.45 ui-monospace,Consolas,monospace;white-space:pre}
+img.fig{max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;margin:8px 0}
+.opts{display:grid;gap:7px;margin-top:10px}
+.opts button{text-align:left;display:flex;gap:10px;white-space:pre-wrap}
+.opts button b{flex:none;width:1.4em}
+.opts button.ok{background:var(--oks);border-color:var(--ok)}.opts button.bad{background:var(--bads);border-color:var(--bad)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:9px}
+.fb.ok{background:var(--oks)}.fb.bad{background:var(--bads)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.grid button{width:34px;height:30px;padding:0;font-size:12px}
+.grid button.cur{border:2px solid var(--acc)}.grid button.ok{background:var(--oks);border-color:var(--ok)}.grid button.bad{background:var(--bads);border-color:var(--bad)}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px 10px;margin:10px 0}
+.sheet label{display:flex;gap:6px;align-items:center;font-variant-numeric:tabular-nums}
+.sheet label span{width:2.2em;text-align:right;color:var(--mut)}
+.sheet label.ok select{border-color:var(--ok);background:var(--oks)}.sheet label.bad select{border-color:var(--bad);background:var(--bads)}
+select,textarea{font:inherit;color:var(--txt);background:var(--card);border:1px solid var(--line);border-radius:7px;padding:4px 6px}
+textarea{width:100%;font:13px/1.45 ui-monospace,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.big{font-size:30px;font-weight:700}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#000d;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="toast"></div>
+<script>
+const DATA = {"date": "2026-10-09", "weekday": "Friday", "dayLabel": "Day 1 of 17", "title": "Diagnostic: 2026S Subject A", "greeting": "Good morning, Neth! Today is just one thing: a timed 90-minute paper. You don't need to study first. The point is to find out where you stand.", "examDate": "Sun Oct 25", "daysToExam": 16, "notice": "Day 1, so there are no earlier scores to adjust for yet. The domain groups on the Check answers tab follow the plan's Q-range table, with the boundaries adjusted to where this paper's topics actually switch (network Q23–27, security Q28–34).", "totalTime": "1.5 h", "plan": [{"text": "Open 2026S_FE-A_Questions.pdf, have scratch paper and a pencil ready, and put your phone away", "time": "5 min", "note": "Skip Q1, it's the answer-sheet sample. You'll answer Q2–Q60."}, {"text": "Start the 90-min timer and do Q2–Q60 on paper. Don't pause it.", "time": "90 min", "note": "Pass 1: answer anything you can in under a minute and mark the calculations. Pass 2: go back to the marked ones. Guess on every blank with 5 min left."}, {"text": "Enter your answers on the Check answers tab and press Check", "time": "5 min", "note": "Don't open the official key PDF. The checker has it."}, {"text": "Error log tab: pick a 'why' for every miss, then Copy and paste it in the chat", "time": "10–15 min", "note": "Choose didn't know, misread, calc slip, or ran out of time. That's what decides tomorrow's adjustments."}], "timerPresets": [90, 15], "timerNote": "90 min = the real Subject A time. Keep it running even if you get stuck.", "refresher": {"title": "Subject A strategy for today's diagnostic", "source": "Study plan §1 and §5", "points": ["60 questions in 90 min is about 1.5 min each. Q1 is the sample, so 59 count.", "Topics come in a fixed order: Q2–7 CS fundamentals, Q8–17 computer systems, Q18–22 DB, ~Q23–27 network, ~Q28–33 security, Q34–40 development, Q41–45 management, Q46–60 strategy.", "Strategy plus management is about 20 of 60 questions. Note how many of those you knew without guessing.", "No penalty for wrong answers, so never leave a blank."], "example": {"title": "Two-pass pacing in practice", "steps": ["Q2 is a radix conversion. If you can't see it in 30 seconds, mark it and move on.", "Answer definition questions right away (e.g. 'Which of the following is…'). These take 30–60 seconds.", "At about 60 min you should be on Q60 for the first pass. Spend the remaining ~30 min on the marked calculations.", "With 5 min left, fill every blank with your best guess."]}, "trap": "Words like NOT, most appropriate, and 'only when' in the stem decide the answer. Underline them before you read the options."}, "quizzes": [], "scoreSheets": [{"id": "a26", "title": "2026S Subject A (diagnostic)", "paper": "2026S FE-A", "tab": "Check answers", "start": 2, "count": 59, "letters": "abcd", "key": {"2": "b", "3": "a", "4": "c", "5": "c", "6": "d", "7": "b", "8": "c", "9": "c", "10": "d", "11": "b", "12": "b", "13": "b", "14": "d", "15": "c", "16": "d", "17": "b", "18": "a", "19": "b", "20": "d", "21": "d", "22": "d", "23": "d", "24": "b", "25": "c", "26": "b", "27": "b", "28": "c", "29": "d", "30": "b", "31": "b", "32": "b", "33": "a", "34": "c", "35": "d", "36": "a", "37": "b", "38": "a", "39": "a", "40": "c", "41": "d", "42": "d", "43": "b", "44": "c", "45": "c", "46": "d", "47": "c", "48": "c", "49": "c", "50": "b", "51": "b", "52": "a", "53": "a", "54": "b", "55": "b", "56": "a", "57": "c", "58": "b", "59": "b", "60": "d"}, "domains": [{"name": "CS fundamentals", "from": 2, "to": 7}, {"name": "Computer systems", "from": 8, "to": 17}, {"name": "Database", "from": 18, "to": 22}, {"name": "Network", "from": 23, "to": 27}, {"name": "Security", "from": 28, "to": 34}, {"name": "Development", "from": 35, "to": 40}, {"name": "Management", "from": 41, "to": 45}, {"name": "Strategy", "from": 46, "to": 60}], "note": "Enter what you marked on paper. Leave blanks blank so we see them as misses.", "adviceRules": "Plan §6: A < 50% → keep the plan, but on Oct 21 halve the strategy flashcards and spend that time on your lowest technology domain. Both A and B ≥ 65% → swap some reading for timed mixed drills."}], "tips": ["Time every mock. Don't pause the timer.", "Log every wrong or guessed answer with why you missed it.", "Don't read the book cover to cover. Skim, quiz, then drill the matching past-exam range."], "tomorrow": "Sat Oct 10: review today's errors (1 h), then the 2026S Subject B diagnostic (100 min) and the pseudocode notation page."};
+</script>
+<script>
+"use strict";
+window.onerror=(m)=>{document.getElementById('app').innerHTML='<div class="card"><h2>Something broke</h2><p>'+String(m).replace(/</g,'&lt;')+'</p><p>Tell Claude in the chat so it can fix today\'s file.</p></div>'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2200)}
+const REASONS=['','didn\'t know','misread','calculation slip','ran out of time','guessed (right)'];
+const S={checks:(DATA.plan||[]).map(()=>false),quiz:{},sheet:{},reasons:{},tab:0};
+(DATA.quizzes||[]).forEach(z=>S.quiz[z.id]={i:0,ans:{},guess:{}});
+(DATA.scoreSheets||[]).forEach(s=>S.sheet[s.id]={ans:{},checked:false});
+
+/* ---------- header, plan, timer ---------- */
+function header(){const d=DATA;
+  return `<div class="card"><div class="top"><div><span class="tag">${esc(d.weekday)} · ${esc(d.date)}${d.dayLabel?' · '+esc(d.dayLabel):''}</span>
+  <h1>${esc(d.title)}</h1><div>${esc(d.greeting||'')}</div></div>
+  ${d.daysToExam!=null?`<div class="count"><b>${esc(d.daysToExam)}</b><span class="mut small">day${d.daysToExam==1?'':'s'} to exam<br>${esc(d.examDate||'')}</span></div>`:''}</div>
+  ${d.notice?`<div class="box warn">${esc(d.notice)}</div>`:''}</div>`}
+function planCard(){const p=DATA.plan||[];if(!p.length)return'';const n=S.checks.filter(Boolean).length;
+  return `<div class="card"><h2>Today's plan <span class="mut small">(${n}/${p.length} done${DATA.totalTime?' · '+esc(DATA.totalTime):''})</span></h2>
+  <div class="bar"><i style="width:${Math.round(100*n/p.length)}%"></i></div>
+  ${p.map((t,k)=>`<label class="check ${S.checks[k]?'done':''}"><input type="checkbox" data-chk="${k}" ${S.checks[k]?'checked':''}><span><span class="t">${esc(t.text)}</span>${t.time?` <span class="pill">${esc(t.time)}</span>`:''}${t.note?`<br><span class="mut small">${esc(t.note)}</span>`:''}</span></label>`).join('')}</div>`}
+const T={left:0,total:0,run:false,h:null};
+function timerCard(){const pr=DATA.timerPresets||[25];
+  return `<div class="card"><h2>Timer</h2><div class="row" style="justify-content:space-between"><div class="timer" id="tm">${fmt(T.left)}</div>
+  <div class="row">${pr.map(m=>`<button data-tp="${m}">${m} min</button>`).join('')}<button id="tgo" class="pri">${T.run?'Pause':'Start'}</button><button id="trs">Reset</button></div></div>
+  <div class="mut small">${esc(DATA.timerNote||'Exam pace: Subject A ≈ 1.5 min/question, Subject B ≈ 5 min/question. Don\'t pause timed mocks.')}</div></div>`}
+function fmt(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':':'')+String(m).padStart(h?2:1,'0')+':'+String(x).padStart(2,'0')}
+function tick(){T.left--;const e=$('#tm');if(e)e.textContent=fmt(T.left);if(T.left<=0){clearInterval(T.h);T.run=false;if(e)e.classList.add('end');beep();toast('Time is up');const g=$('#tgo');if(g)g.textContent='Start'}}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(a.currentTime+.6)}catch(e){}}
+
+/* ---------- refresher ---------- */
+function refCard(){const r=DATA.refresher;if(!r)return'';
+  return `<div class="card"><span class="tag">Refresher${r.source?' · '+esc(r.source):''}</span><h2>${esc(r.title)}</h2>
+  ${r.points&&r.points.length?`<ul>${r.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
+  ${r.example?`<h3>Worked example: ${esc(r.example.title||'')}</h3>${r.example.code?`<pre>${esc(r.example.code)}</pre>`:''}<ol class="steps">${(r.example.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:''}
+  ${r.trap?`<div class="box warn"><b>Exam trap:</b> ${esc(r.trap)}</div>`:''}</div>`}
+
+/* ---------- quiz ---------- */
+function quizCard(z){const st=S.quiz[z.id],Q=z.questions,i=st.i,q=Q[i];
+  const answered=Object.keys(st.ans).length,right=Q.filter(x=>st.ans[x.id]===x.answer).length;
+  let h=`<div class="card" id="qz-${esc(z.id)}"><div class="top"><div><span class="tag">Practice${z.source?' · '+esc(z.source):''}</span><h2>${esc(z.title)}</h2></div>
+  <div class="count"><b>${right}/${answered}</b><span class="mut small">correct of ${answered} answered (${Q.length} total)</span></div></div>
+  ${z.note?`<div class="mut small">${esc(z.note)}</div>`:''}
+  <div class="grid">${Q.map((x,k)=>{const a=st.ans[x.id];return `<button data-qj="${esc(z.id)}|${k}" class="${k===i?'cur ':''}${a?(a===x.answer?'ok':'bad'):''}" title="${esc(x.label)}">${k+1}</button>`}).join('')}</div>`;
+  const a=st.ans[q.id];
+  h+=`<div class="pill">${esc(q.label)}</div>${q.topic?`<span class="mut small">${esc(q.topic)}</span>`:''}
+  <div class="qtext" style="margin-top:8px">${esc(q.q)}</div>${q.code?`<pre>${esc(q.code)}</pre>`:''}${q.img?`<img class="fig" src="${q.img}" alt="Figure for ${esc(q.label)}">`:''}
+  <div class="opts">${q.options.map(o=>{let c='';if(a){if(o.k===q.answer)c='ok';else if(o.k===a)c='bad'}
+    return `<button data-qa="${esc(z.id)}|${esc(o.k)}" class="${c}" ${a?'disabled':''}><b>${esc(o.k)})</b><span>${esc(o.t)}</span></button>`}).join('')}</div>`;
+  if(a){const ok=a===q.answer;h+=`<div class="fb ${ok?'ok':'bad'}">${ok?'✅ Correct.':`❌ You chose ${esc(a)}. Correct answer: <b>${esc(q.answer)}</b>.`}<br>${esc(q.explain||'')}${q.trap?`<br><i>Trap:</i> ${esc(q.trap)}`:''}
+    ${ok?`<div style="margin-top:6px"><label class="small"><input type="checkbox" data-gs="${esc(z.id)}|${esc(q.id)}" ${st.guess[q.id]?'checked':''}> I guessed this one (log it for review)</label></div>`:''}</div>`}
+  h+=`<div class="row" style="margin-top:12px;justify-content:space-between"><button data-qn="${esc(z.id)}|-1" ${i===0?'disabled':''}>← Prev</button>
+  <span class="mut small">Question ${i+1} of ${Q.length}</span><button class="pri" data-qn="${esc(z.id)}|1" ${i===Q.length-1?'disabled':''}>Next →</button></div></div>`;
+  return h}
+
+/* ---------- score sheet (answer checker for timed papers) ---------- */
+function sheetCard(s){const st=S.sheet[s.id],L=(s.letters||'abcd').split(''),n=s.count||Object.keys(s.key).length;
+  let h=`<div class="card" id="sh-${esc(s.id)}"><span class="tag">Answer checker</span><h2>${esc(s.title)}</h2>
+  <div class="mut small">${esc(s.note||'Do the paper on paper first, timed. Then enter your answers here and press Check. The official key stays hidden until you check.')}</div><div class="sheet">`;
+  for(let k=s.start||1;k<(s.start||1)+n;k++){const v=st.ans[k]||'',c=st.checked?(v===s.key[k]?'ok':'bad'):'';
+    h+=`<label class="${c}"><span>Q${k}</span><select data-sa="${esc(s.id)}|${k}" ${st.checked?'disabled':''}><option value="">–</option>${L.map(l=>`<option ${v===l?'selected':''}>${l}</option>`).join('')}</select>${st.checked&&v!==s.key[k]?`<small>${esc(s.key[k])}</small>`:''}</label>`}
+  h+=`</div><div class="row"><button class="pri" data-sc="${esc(s.id)}" ${st.checked?'disabled':''}>Check answers</button>${st.checked?`<button data-sr="${esc(s.id)}">Edit answers</button>`:''}</div>`;
+  if(st.checked){const qs=Object.keys(s.key).map(Number),right=qs.filter(k=>st.ans[k]===s.key[k]).length,pct=Math.round(100*right/qs.length);
+    h+=`<div class="row" style="margin-top:12px;gap:24px"><div><div class="big">${right}/${qs.length}</div><span class="mut small">correct</span></div><div><div class="big">${pct}%</div><span class="mut small">score</span></div></div>`;
+    if(s.domains&&s.domains.length){h+=`<h3>By domain</h3><table><tr><th>Domain</th><th>Qs</th><th>Score</th><th></th></tr>${s.domains.map(d=>{const ks=qs.filter(k=>k>=d.from&&k<=d.to),r=ks.filter(k=>st.ans[k]===s.key[k]).length,p=ks.length?Math.round(100*r/ks.length):0;
+      return `<tr><td>${esc(d.name)}</td><td>Q${d.from}–${d.to}</td><td>${r}/${ks.length}</td><td><div class="bar" style="width:120px"><i style="width:${p}%;background:${p<50?'var(--bad)':p<65?'var(--warn)':'var(--ok)'}"></i></div></td></tr>`}).join('')}</table>`}
+    if(s.adviceRules)h+=`<div class="box">${esc(s.adviceRules)}</div>`}
+  return h+'</div>'}
+
+/* ---------- review / error log export ---------- */
+function misses(){const out=[];
+  (DATA.quizzes||[]).forEach(z=>{const st=S.quiz[z.id];z.questions.forEach(q=>{const a=st.ans[q.id];if(!a)return;
+    if(a!==q.answer)out.push({key:z.id+'|'+q.id,label:q.label,topic:q.topic||'',mine:a,ans:q.answer});
+    else if(st.guess[q.id])out.push({key:z.id+'|'+q.id,label:q.label,topic:q.topic||'',mine:a,ans:q.answer,guessed:true})})});
+  (DATA.scoreSheets||[]).forEach(s=>{const st=S.sheet[s.id];if(!st.checked)return;Object.keys(s.key).forEach(k=>{if(st.ans[k]!==s.key[k]){
+    const d=(s.domains||[]).find(d=>k>=d.from&&k<=d.to);out.push({key:s.id+'|'+k,label:(s.paper||s.title)+' Q'+k,topic:d?d.name:'',mine:st.ans[k]||'blank',ans:s.key[k]})}})});
+  return out}
+function summary(){const lines=[`## ${DATA.date} · ${DATA.title}`];
+  (DATA.scoreSheets||[]).forEach(s=>{const st=S.sheet[s.id];if(!st.checked)return;const qs=Object.keys(s.key),r=qs.filter(k=>st.ans[k]===s.key[k]).length;
+    lines.push(`Score ${s.paper||s.title}: ${r}/${qs.length} (${Math.round(100*r/qs.length)}%)`);
+    (s.domains||[]).forEach(d=>{const ks=qs.map(Number).filter(k=>k>=d.from&&k<=d.to);if(ks.length)lines.push(`  - ${d.name}: ${ks.filter(k=>st.ans[k]===s.key[k]).length}/${ks.length}`)})});
+  (DATA.quizzes||[]).forEach(z=>{const st=S.quiz[z.id],n=Object.keys(st.ans).length;if(n)lines.push(`Practice "${z.title}": ${z.questions.filter(q=>st.ans[q.id]===q.answer).length}/${n} correct (${z.questions.length} available)`)});
+  lines.push(`Plan items done: ${S.checks.filter(Boolean).length}/${S.checks.length}`);
+  const m=misses();if(m.length){lines.push('','| Question | Topic | My answer | Correct | Why |','|---|---|---|---|---|');
+    m.forEach(x=>lines.push(`| ${x.label} | ${x.topic} | ${x.mine} | ${x.ans} | ${S.reasons[x.key]||(x.guessed?'guessed (right)':'?')} |`))}
+  return lines.join('\n')}
+function reviewCard(){const m=misses();
+  return `<div class="card"><h2>Error log</h2><div class="mut small">For every wrong or guessed answer, pick <i>why</i>. Then press Copy and paste it into the chat. Claude will add it to <b>FE_Error_Log.md</b> in your folder and use it to adjust the plan.</div>
+  ${m.length?`<table style="margin-top:8px"><tr><th>Question</th><th>Topic</th><th>You → correct</th><th>Why?</th></tr>${m.map(x=>`<tr><td>${esc(x.label)}</td><td>${esc(x.topic)}</td><td>${esc(x.mine)} → <b>${esc(x.ans)}</b></td><td><select data-rs="${esc(x.key)}">${REASONS.map(r=>`<option ${(S.reasons[x.key]||(x.guessed?'guessed (right)':''))===r?'selected':''}>${r}</option>`).join('')}</select></td></tr>`).join('')}</table>`:'<p class="mut">Nothing to log yet. Answer some questions or check a paper first.</p>'}
+  <h3>Today's summary</h3><textarea id="sum" rows="8" readonly>${esc(summary())}</textarea>
+  <div class="row" style="margin-top:8px"><button class="pri" id="cp">Copy summary</button><span class="mut small">If copying is blocked, click the box, select all, and copy.</span></div></div>`}
+
+/* ---------- extras ---------- */
+function extrasCard(){const t=DATA.tips||[],tm=DATA.tomorrow;if(!t.length&&!tm)return'';
+  return `<div class="card">${t.length?`<h2>Reminders</h2><ul>${t.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${tm?`<div class="mut"><b>Tomorrow:</b> ${esc(tm)}</div>`:''}</div>`}
+
+/* ---------- layout ---------- */
+function render(keepScroll){const y=window.scrollY;
+  const tabs=[['Today',()=>planCard()+timerCard()+refCard()+extrasCard()]];
+  (DATA.quizzes||[]).forEach(z=>tabs.push([z.tab||'Practice',()=>quizCard(z)]));
+  (DATA.scoreSheets||[]).forEach(s=>tabs.push([s.tab||'Check answers',()=>sheetCard(s)]));
+  tabs.push(['Error log',()=>reviewCard()]);
+  if(S.tab>=tabs.length)S.tab=0;
+  $('#app').innerHTML=header()+`<div class="tabs">${tabs.map((t,k)=>`<button data-tab="${k}" class="${k===S.tab?'on':''}">${esc(t[0])}</button>`).join('')}</div>`+tabs[S.tab][1]();
+  if(keepScroll)window.scrollTo(0,y);else window.scrollTo(0,0)}
+
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tab){S.tab=+d.tab;return render()}
+  if(d.tp){clearInterval(T.h);T.total=T.left=+d.tp*60;T.run=false;return render(true)}
+  if(b.id==='tgo'){if(T.left<=0){toast('Pick a duration first');return}T.run=!T.run;if(T.run)T.h=setInterval(tick,1000);else clearInterval(T.h);b.textContent=T.run?'Pause':'Start';return}
+  if(b.id==='trs'){clearInterval(T.h);T.run=false;T.left=T.total;return render(true)}
+  if(d.qa){const[z,k]=d.qa.split('|'),Z=DATA.quizzes.find(x=>x.id===z),st=S.quiz[z],q=Z.questions[st.i];if(!st.ans[q.id]){st.ans[q.id]=k}return render(true)}
+  if(d.qn){const[z,s]=d.qn.split('|'),st=S.quiz[z],n=DATA.quizzes.find(x=>x.id===z).questions.length;st.i=Math.min(n-1,Math.max(0,st.i+ +s));return render(true)}
+  if(d.qj){const[z,k]=d.qj.split('|');S.quiz[z].i=+k;return render(true)}
+  if(d.sc){const st=S.sheet[d.sc],s=DATA.scoreSheets.find(x=>x.id===d.sc),blank=Object.keys(s.key).filter(k=>!st.ans[k]).length;
+    if(blank&&!confirm0(blank))return;st.checked=true;return render(true)}
+  if(d.sr){S.sheet[d.sr].checked=false;return render(true)}
+  if(b.id==='cp'){const t=$('#sum');t.value=summary();t.select();
+    (navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(()=>toast('Copied. Paste it into the chat.')).catch(()=>{try{document.execCommand('copy');toast('Copied. Paste it into the chat.')}catch(_){toast('Select the text and copy it manually')}})}
+});
+let pendingBlank=null;
+function confirm0(n){if(pendingBlank===n){pendingBlank=null;return true}pendingBlank=n;toast(n+' unanswered. Press Check again to score them as blank.');return false}
+document.addEventListener('change',e=>{const t=e.target,d=t.dataset;
+  if(d.chk!=null){S.checks[+d.chk]=t.checked;return render(true)}
+  if(d.sa){const[s,k]=d.sa.split('|');S.sheet[s].ans[k]=t.value;return}
+  if(d.gs){const[z,q]=d.gs.split('|');S.quiz[z].guess[q]=t.checked;return}
+  if(d.rs){S.reasons[d.rs]=t.value;const s=$('#sum');if(s)s.value=summary();return}
+});
+T.total=T.left=(DATA.timerPresets||[25])[0]*60;
+render();
+</script>
+</body>
+</html>
